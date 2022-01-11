@@ -1,0 +1,21 @@
+﻿<h1>PLEASE DON'T USE LIKE THAT </h1>
+
+<div>
+    @ViewData["TestData1"]
+</div>
+
+
+<div>
+    @ViewData["TestData2"]
+</div>
+
+
+<div>
+    @ViewBag.Message
+</div>
+
+
+@foreach (var msg in ViewBag.Messages)
+{
+    <div>@msg</div>
+}

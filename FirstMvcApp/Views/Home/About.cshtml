@@ -1,0 +1,25 @@
+﻿@model AboutModel
+
+@{
+    ViewBag.Title = "About";
+    Layout = "_Layout";
+}
+
+<h2>About Us</h2>
+
+<div>
+    <div>
+        <label>Address</label> 
+        <p>@Model?.Address</p>
+    </div>
+    <div>
+        <label>Email</label> 
+        <p>@Model?.Email</p>
+    </div>
+    <div>
+        <label>Phone</label> 
+        <p>@Model?.Phone</p>
+    </div>
+</div>
+
+@await Html.PartialAsync("Message")

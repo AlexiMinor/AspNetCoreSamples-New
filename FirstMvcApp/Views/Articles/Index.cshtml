@@ -1,0 +1,20 @@
+﻿@model List<ArticleListItemViewModel>
+
+@*<form method="post" action="~/news/generate">
+
+    <input type="text" name="name" placeholder="name"/>
+    <input type="number" name="id" placeholder="id"/>
+    <input type="radio" name="isApproved" value="false"/>
+    <input type="submit" value="Submit"/>
+
+</form>*@
+
+
+<div class="container">
+    <div class="row">
+    @foreach (var article in Model)
+    {
+        await Html.RenderPartialAsync("ArticlePreviewPartial", article);
+    }
+    </div>
+</div>

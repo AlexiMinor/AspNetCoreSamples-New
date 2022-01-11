@@ -1,0 +1,14 @@
+﻿@model System.Collections.Generic.List<int>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@if (Model != null)
+{
+    foreach (var i in Model)
+    {
+        <div>@i</div>
+    }
+}  
