@@ -1,4 +1,6 @@
-﻿namespace FirstMvcApp.Models;
+﻿using FirstMvcApp.Core;
+
+namespace FirstMvcApp.Models;
 
 public class NewsDetailModel
 {
@@ -7,5 +9,6 @@ public class NewsDetailModel
     public string Body { get; set; }
     public DateTime CreationDate { get; set; }
 
+    public ArticleType ArticleType { get; set; }
     public string SourceName { get; set; }
 }

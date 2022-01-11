@@ -81,5 +81,35 @@ namespace FirstMvcApp.Controllers
 
             return View();
         }
+
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var article = await _db.Articles
+                .AsNoTracking()
+                .FirstOrDefaultAsync(article 
+                    => article.Id.Equals(id));
+
+            if (article != null)
+            {
+                var model = new NewsDetailModel()
+                {
+                    Id = id,
+                    Body = article.Body,
+                    Title = article.Title,
+                    CreationDate = article.CreationDate
+                };
+                return View(model);
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(NewsDetailModel model)
+        {
+            
+
+            return BadRequest();
+        }
     }
 }

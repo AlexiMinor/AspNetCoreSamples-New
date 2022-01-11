@@ -5,10 +5,14 @@
         <div class="card-body">
             <h5 class="card-title">@Model.Title</h5>
             <p class="card-text">@Model.Description</p>
-            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-primary">Read</a>
+            <a asp-action="Details" asp-route-id="@Model.Id" asp-fragment="" class="btn btn-primary">Read</a>
+            @*<a asp-controller="User" asp-action="UserDetail" asp-route-model="@{ new UserRegisterModel() { };}" class="btn btn-primary">Read</a>*@
         </div>
         <div class="card-footer text-muted">
             Published: @Model.CreationDate
         </div>
     </div>
 </div>
+
+
+///domain/smth/smth#smth1

@@ -11,10 +11,13 @@
     
 @await Html.PartialAsync("Message", new List<int>() { 1, 2, 3, 4, 5 })
 
+<address1/>
 
+<environment  exclude="Development">
 @section Scripts
 {
     <script>
         alert(123);
     </script>
 }
+</environment>

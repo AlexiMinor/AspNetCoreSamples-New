@@ -1,6 +1,5 @@
 ﻿@model NewsDetailViewModel
 
-
 <div class="container">
     <div class="row gx-5">
         <div class="col-3">
@@ -15,10 +14,17 @@
             </p>
         </div>
         <div class="col-12">
-            @Model.NewsDetailModel.Body
+            Date Time now: @DateTime.Now.ToString("F")
         </div>
+        <cache expires-on="DateTimeOffset.Now.AddDays(1)">
+            <div class="col-12">
+                @await Html.PartialAsync("DateTimePartial")
+            </div>
+        </cache>
     </div>
-    <hr/>
+    <hr />
+    <a asp-controller="Articles" asp-action="Edit" asp-route-id="@Model.NewsDetailModel.Id">Edit</a>
+    <hr />
     <div class="row gx-5">
         @foreach (var comment in Model.Comments)
         {
@@ -34,7 +40,7 @@
                 </div>
             </div>
         }
-        <hr/>
+        <hr />
 
     </div>
 </div>

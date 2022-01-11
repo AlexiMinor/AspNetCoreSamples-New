@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstMvcApp.Core", "FirstMv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstMvcApp.Domain", "FirstMvcApp.Domain\FirstMvcApp.Domain.csproj", "{C0D4E78D-A596-4210-9946-ABEE7AC1BC6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstMvcApp.Data", "FirstMvcApp.Data\FirstMvcApp.Data.csproj", "{2E7424BA-465B-4979-B33B-26848AF9A47D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstMvcApp.Data", "FirstMvcApp.Data\FirstMvcApp.Data.csproj", "{2E7424BA-465B-4979-B33B-26848AF9A47D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

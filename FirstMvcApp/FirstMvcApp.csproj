@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Articles\Edit.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\User\Login.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Comments\Create.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Test\BadPractices.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Articles\Index.cshtml" />
@@ -38,7 +40,6 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
-    <Folder Include="Views\Shared\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\js\" />
@@ -54,6 +55,14 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\Comments\Create.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\User\Login.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Articles\Edit.cshtml" />
   </ItemGroup>
 
 </Project>
