@@ -71,17 +71,40 @@ namespace FirstMvcApp.Controllers
             return View(viewModel);
         }
 
-
-
-
-
         [HttpGet]
-        public IActionResult Page()
+        public IActionResult Create()
         {
-
-            return View();
+            var newsDetailModel = new NewsDetailModel();
+            return View(newsDetailModel);
         }
-
+        
+        [HttpPost]
+        public async Task<IActionResult> Create(NewsDetailModel model)
+        {
+            //is sourse is correct
+            if (!string.IsNullOrEmpty(model.SourceName))
+            {
+                var sourse = await _db.Sources.FirstOrDefaultAsync(source => source.Name.Equals(model.SourceName));
+                if (sourse != null)
+                {
+                    //check fields for null
+                    var entity = new Article()
+                    {
+                        Id = Guid.NewGuid(),
+                        Body = model.Body,
+                        Description = model.Body,
+                        CreationDate = DateTime.Now,
+                        Title = model.Title,
+                        SourceId = sourse.Id
+                    };
+                }
+            }
+        
+           
+            //todo insert to db
+            return BadRequest();
+        }
+        [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
             var article = await _db.Articles

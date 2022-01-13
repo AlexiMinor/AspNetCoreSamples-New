@@ -2,14 +2,15 @@
 
 namespace FirstMvcApp.TagHelpers
 {
-    public class Address1TagHelper : TagHelper
+    public class CustomAddressTagHelper : TagHelper
     {
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "h2";
             output.TagMode = TagMode.SelfClosing;
-
-            output.Content.SetContent($"76 Buckingham Palace Road, London SW1W - {DateTime.Now:F}");
+            output.PreContent.SetContent("<div>");
+            output.Content.SetContent("123");
+            output.PostContent.SetContent("</div>");
 
             //var data = await Task.Run(() => 15);
 

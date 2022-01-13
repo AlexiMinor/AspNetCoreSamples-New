@@ -28,9 +28,9 @@ namespace FirstMvcApp.Controllers
         public IActionResult Register()
         {
             var roles = _db.Roles.ToList();
-            var model = new UserRegisterViewModel()
+            var model = new UserRegisterModel()
             {
-                Roles = roles.Select(role => new SelectListItem(role.Name, role.Id.ToString()))
+                AvailableRoles = roles.Select(role => new SelectListItem(role.Name, role.Id.ToString()))
             };
 
             return View(model);
@@ -39,7 +39,18 @@ namespace FirstMvcApp.Controllers
         [HttpPost]
         public IActionResult Register(UserRegisterModel model)
         {
-            return RedirectToAction("Index","Home");
+
+            if (model.Email.Equals(model.Password))
+            {
+                ModelState.AddModelError("EmailPasswordEquality","Email and password must be different");
+            }
+            if (ModelState.IsValid)
+            {
+                return Ok(model);
+            }
+            var roles = _db.Roles.ToList();
+       
+            return View(model);
         }
 
         public IActionResult UserDetail(UserRegisterModel model)
