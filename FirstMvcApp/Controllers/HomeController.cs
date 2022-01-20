@@ -1,20 +1,32 @@
 ﻿using FirstMvcApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using FirstMvcApp.Data;
 
 namespace FirstMvcApp.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly NewsAggregatorContext _db;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, 
+            NewsAggregatorContext db)
         {
             _logger = logger;
+            _db = db;
         }
 
         public IActionResult Index()
         {
+            var topRatedNews = _db.Articles
+                .OrderByDescending(article => article.PositivityRate)
+                .Select(article => new TopRatedNewsHomeScreenViewModel()
+                {
+                    Id = article.Id,
+                    Title = article.Title
+                });
+
             return View();
         }
 

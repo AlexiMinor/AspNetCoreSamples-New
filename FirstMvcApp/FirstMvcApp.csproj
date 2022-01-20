@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Articles\Delete.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Articles\Edit.cshtml" />
     <_ContentIncludedByDefault Remove="Views\User\Login.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Comments\Create.cshtml" />
@@ -20,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FirstMvcApp.Core\FirstMvcApp.Core.csproj" />
+    <ProjectReference Include="..\FirstMvcApp.DataAccess\FirstMvcApp.DataAccess.csproj" />
     <ProjectReference Include="..\FirstMvcApp.Data\FirstMvcApp.Data.csproj" />
     <ProjectReference Include="..\FirstMvcApp.Domain\FirstMvcApp.Domain.csproj" />
   </ItemGroup>
@@ -29,6 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
       <PrivateAssets>all</PrivateAssets>
@@ -63,6 +67,10 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\Articles\Edit.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Articles\Delete.cshtml" />
   </ItemGroup>
 
 </Project>

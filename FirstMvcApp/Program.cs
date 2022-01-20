@@ -1,5 +1,7 @@
 using FirstMvcApp.Core.Interfaces;
+using FirstMvcApp.Core.Interfaces.Data;
 using FirstMvcApp.Data;
+using FirstMvcApp.DataAccess;
 using FirstMvcApp.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,8 +20,12 @@ namespace FirstMvcApp
                 => opt.UseSqlServer(connectionString));
             
             // Add services to the container.
-            builder.Services.AddScoped<INewsService, NewsService>();
+            builder.Services.AddScoped<IArticlesService, ArticlesService>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
             builder.Services.AddScoped<ITestService, TestService>();
+
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddControllersWithViews();
 

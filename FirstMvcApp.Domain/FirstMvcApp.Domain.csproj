@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FirstMvcApp.Core\FirstMvcApp.Core.csproj" />
+    <ProjectReference Include="..\FirstMvcApp.Data\FirstMvcApp.Data.csproj" />
   </ItemGroup>
 
 </Project>
