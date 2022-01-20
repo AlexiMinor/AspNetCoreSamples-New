@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using FirstMvcApp.Core.DTOs;
 using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Core.Interfaces.Data;
-using FirstMvcApp.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace FirstMvcApp.Domain.Services
@@ -13,14 +12,11 @@ namespace FirstMvcApp.Domain.Services
         private readonly IMapper _mapper;
         private readonly ITestService _testService;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly NewsAggregatorContext _db;
 
         public ArticlesService(ITestService testService,
-            NewsAggregatorContext db,
             IMapper mapper, IUnitOfWork unitOfWork)
         {
             _testService = testService;
-            _db = db;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }

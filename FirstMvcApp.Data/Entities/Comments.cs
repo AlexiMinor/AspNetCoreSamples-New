@@ -1,8 +1,7 @@
 ﻿namespace FirstMvcApp.Data.Entities;
 
-public class Comment
+public class Comment : BaseEntity
 {
-    public Guid Id { get; set; }
     public string Text { get; set; }
     public DateTime CreationDateTime { get; set; }
 
