@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Data;
+using FirstMvcApp.Filters;
 
 namespace FirstMvcApp.Controllers
 {
@@ -21,6 +22,7 @@ namespace FirstMvcApp.Controllers
             _emailSender = emailSender;
         }
 
+        //[CustomNotFoundFilter]
         public async Task<IActionResult> Index()
         {
             await _emailSender.SendEmailAsync("1", "2", "3");

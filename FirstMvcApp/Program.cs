@@ -4,7 +4,9 @@ using FirstMvcApp.Core.Interfaces.Data;
 using FirstMvcApp.Data;
 using FirstMvcApp.DataAccess;
 using FirstMvcApp.Domain.Services;
+using FirstMvcApp.Filters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace FirstMvcApp
 {
@@ -16,10 +18,8 @@ namespace FirstMvcApp
 
             builder.Configuration
                 .AddJsonFile("emailConfiguration.json")
-                .AddInMemoryCollection()
-                .AddTxtConfiguration("123");
-
-        
+                .AddInMemoryCollection();
+                //.AddTxtConfiguration("123");
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -38,7 +38,8 @@ namespace FirstMvcApp
 
             builder.Services.AddDbContext<NewsAggregatorContext>(opt
                 => opt.UseSqlServer(connectionString));
-            
+
+            //RegisterServices(builder.Services);
             // Add services to the container.
             builder.Services.AddScoped<IArticlesService, ArticlesService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -46,10 +47,17 @@ namespace FirstMvcApp
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
             builder.Services.AddScoped<ITestService, TestService>();
             builder.Services.AddScoped<IEmailSender, EmailService>();
+          
+            builder.Services.AddScoped<CustomFilter>();
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(opt =>
+            {
+                //opt.Filters.Add(typeof(SampleResourceFilter));
+                //opt.Filters.Add(new SampleResourceFilter());
+                opt.Filters.Add<SampleResourceFilter>();
+            });
 
             //builder.Services.AddScoped<INewsService, NewsService>();
 
@@ -76,6 +84,13 @@ namespace FirstMvcApp
 
             app.Run();
 
+        }
+
+        private static IServiceCollection RegisterServices(IServiceCollection collection)
+        {
+
+            collection = collection.AddScoped<IEmailSender, EmailService>();
+            return collection;
         }
     }
 }
