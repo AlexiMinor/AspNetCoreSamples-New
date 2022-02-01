@@ -1,6 +1,7 @@
 ﻿using FirstMvcApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Data;
 
 namespace FirstMvcApp.Controllers
@@ -10,15 +11,19 @@ namespace FirstMvcApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly NewsAggregatorContext _db;
 
+        private readonly IEmailSender _emailSender;
+
         public HomeController(ILogger<HomeController> logger, 
-            NewsAggregatorContext db)
+            NewsAggregatorContext db, IEmailSender emailSender)
         {
             _logger = logger;
             _db = db;
+            _emailSender = emailSender;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            await _emailSender.SendEmailAsync("1", "2", "3");
             var topRatedNews = _db.Articles
                 .OrderByDescending(article => article.PositivityRate)
                 .Select(article => new TopRatedNewsHomeScreenViewModel()

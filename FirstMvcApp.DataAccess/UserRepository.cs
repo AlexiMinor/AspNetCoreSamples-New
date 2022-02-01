@@ -1,4 +1,5 @@
 ﻿using FirstMvcApp.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirstMvcApp.DataAccess;
 

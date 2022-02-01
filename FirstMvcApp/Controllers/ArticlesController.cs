@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;

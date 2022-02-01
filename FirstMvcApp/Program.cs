@@ -1,3 +1,4 @@
+using FirstMvcApp.ConfigurationProviders;
 using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Core.Interfaces.Data;
 using FirstMvcApp.Data;
@@ -13,8 +14,27 @@ namespace FirstMvcApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Configuration
+                .AddJsonFile("emailConfiguration.json")
+                .AddInMemoryCollection()
+                .AddTxtConfiguration("123");
+
+        
+
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            var z = builder.Configuration["isDebugMode"];
+            var y = builder.Configuration["data"];
+            var x = builder.Configuration["TEMP"];
+
+            //builder.Configuration.AddInMemoryCollection(
+            //    new Dictionary<string, string>()
+            //    {
+            //        { "fromEmail", "value" },
+            //        { "emailPassword", "value2" }
+            //    });
+            
+            //var inMemoryConfigData = builder.Configuration["key"];
 
             builder.Services.AddDbContext<NewsAggregatorContext>(opt
                 => opt.UseSqlServer(connectionString));
@@ -23,7 +43,9 @@ namespace FirstMvcApp
             builder.Services.AddScoped<IArticlesService, ArticlesService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
+            builder.Services.AddScoped<IRepository<User>, UserRepository>();
             builder.Services.AddScoped<ITestService, TestService>();
+            builder.Services.AddScoped<IEmailSender, EmailService>();
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
