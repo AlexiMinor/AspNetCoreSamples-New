@@ -1,4 +1,6 @@
-﻿namespace FirstMvcApp.Core.DTOs;
+﻿using FirstMvcApp.Data.Entities;
+
+namespace FirstMvcApp.Core.DTOs;
 
 public class ArticleDto
 {
@@ -8,4 +10,14 @@ public class ArticleDto
     public string Body { get; set; }
     public DateTime CreationDate { get; set; }
     public float PositivityRate { get; set; }
+
+    public List<CommentDto> CommentDtos { get; set; }
+}
+
+public class CommentDto
+{
+    public string Text { get; set; }
+    public string UserName { get; set; }
+    public DateTime CreationDateTime { get; set; }
+
 }

@@ -1,5 +1,6 @@
 ﻿using FirstMvcApp.Core.Interfaces.Data;
 using FirstMvcApp.Data;
+using FirstMvcApp.Data.Entities;
 
 namespace FirstMvcApp.DataAccess
 {
@@ -17,10 +18,10 @@ namespace FirstMvcApp.DataAccess
 
         public IArticleRepository Articles => _articleRepository;
 
-        public object Roles { get; }
-        public object Users { get; }
-        public object Sources { get; }
-        public object Comments { get; }
+        public IRepository<Role> Roles { get; }
+        public IRepository<User> Users { get; }
+        public IRepository<Source> Sources { get; }
+        public IRepository<Comment> Comments { get; }
 
 
         public async Task<int> Commit()

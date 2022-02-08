@@ -37,8 +37,8 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         if (includes.Any())
         {
-            return await includes.Aggregate(DbSet
-                .Where(entity => entity.Id.Equals(id)), (current, include) => current.Include(include)).FirstOrDefaultAsync();
+            return await includes.Aggregate(DbSet.Where(entity => entity.Id.Equals(id)), 
+                (current, include) => current.Include(include)).FirstOrDefaultAsync();
         }
 
         return await GetById(id);

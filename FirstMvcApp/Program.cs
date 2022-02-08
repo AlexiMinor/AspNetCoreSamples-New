@@ -1,12 +1,13 @@
-using FirstMvcApp.ConfigurationProviders;
 using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Core.Interfaces.Data;
+using FirstMvcApp.Core.SerilogSinks;
 using FirstMvcApp.Data;
+using FirstMvcApp.Data.Entities;
 using FirstMvcApp.DataAccess;
 using FirstMvcApp.Domain.Services;
 using FirstMvcApp.Filters;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
+using Serilog;
 
 namespace FirstMvcApp
 {
@@ -15,6 +16,14 @@ namespace FirstMvcApp
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Host.UseSerilog((ctx, lc) =>
+                {
+                    lc.MinimumLevel.Information().WriteTo.Console();
+                    lc.MinimumLevel.Debug().WriteTo.CustomSink();
+                    lc.MinimumLevel.Fatal().WriteTo.File(@"C:\Users\AlexiMinor\Desktop\New folder (4)\log.log");
+                });
+
 
             builder.Configuration
                 .AddJsonFile("emailConfiguration.json")
@@ -45,6 +54,7 @@ namespace FirstMvcApp
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
+            builder.Services.AddScoped<IRepository<Comment>, CommentsRepository>();
             builder.Services.AddScoped<ITestService, TestService>();
             builder.Services.AddScoped<IEmailSender, EmailService>();
           
@@ -60,7 +70,7 @@ namespace FirstMvcApp
             });
 
             //builder.Services.AddScoped<INewsService, NewsService>();
-
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -82,8 +92,7 @@ namespace FirstMvcApp
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            app.Run();
-
+            app..Run();
         }
 
         private static IServiceCollection RegisterServices(IServiceCollection collection)

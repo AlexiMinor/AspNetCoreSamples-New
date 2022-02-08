@@ -11,7 +11,9 @@ namespace FirstMvcApp.Mappers
         {
             CreateMap<ArticleDto, ArticleTableViewModel>();
             CreateMap<Article, ArticleTableViewModel>();
-            CreateMap<Article, ArticleDto>();
+            CreateMap<Article, ArticleDto>()
+                .ForMember(dest => dest.Body, opt => opt.MapFrom(article => article.Body));
+            CreateMap<ArticleDto, Article>();
 
             CreateMap<ArticleDto, ArticleListItemViewModel>()
                 .ForMember(dest => dest.Rate,

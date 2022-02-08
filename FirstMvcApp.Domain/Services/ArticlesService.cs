@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FirstMvcApp.Core.DTOs;
 using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Core.Interfaces.Data;
+using FirstMvcApp.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace FirstMvcApp.Domain.Services
@@ -11,6 +12,7 @@ namespace FirstMvcApp.Domain.Services
     {
         private readonly IMapper _mapper;
         private readonly ITestService _testService;
+        private readonly ICommentService _commentService;
         private readonly IUnitOfWork _unitOfWork;
 
         public ArticlesService(ITestService testService,
@@ -19,6 +21,15 @@ namespace FirstMvcApp.Domain.Services
             _testService = testService;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+        }
+
+        public async Task<int> UpdateNameAsync(Guid articleId, string newName)
+        {
+            await _unitOfWork.Articles.PatchAsync(articleId, new List<PatchModel>()
+            {
+                new() { PropertyName = "Title", PropertyValue = newName }
+            });
+            return await _unitOfWork.Commit();
         }
 
         public async Task<IEnumerable<ArticleDto>> GetAllNewsAsync()
@@ -38,6 +49,35 @@ namespace FirstMvcApp.Domain.Services
                 article => article.Comments);
             return _mapper.Map<ArticleDto>(article);
         }
+
+
+        public async Task<ArticleDto> GetArticleWithCommentsAndUsernames(Guid id)
+        {
+            var article = await _unitOfWork.Articles.GetById(id);
+
+            var articleWithData = await _unitOfWork.Articles.Get()
+                .Where(a => a.Id.Equals(id)) // better way 
+                .Include(a => a.Comments)
+                .ThenInclude(comment => comment.User)
+                .FirstOrDefaultAsync(/*a => a.Id.Equals(id)*/);
+
+
+            var comments = await _commentService.GetAllCommentsWithUsernameByArticleId(id);
+            
+            return _mapper.Map<ArticleDto>(article);
+        }
+
+        //public async Task<ArticleDto> GetArticlesByDateWithCommentsAndUsernames()
+        //{
+        //    var articles = _unitOfWork.Articles.Get();
+        //    foreach (var article in articles)
+        //    {
+        //        var comments = await _commentService
+        //            .GetAllCommentsWithUsernameByArticleId(article.Id);
+        //    }
+
+        //    return _mapper.Map<ArticleDto>(article);
+        //}
 
         public async Task<int?> DeleteAsync(Guid modelId)
         {

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Data;
 using FirstMvcApp.Filters;
+using Serilog;
 
 namespace FirstMvcApp.Controllers
 {
@@ -25,14 +26,25 @@ namespace FirstMvcApp.Controllers
         //[CustomNotFoundFilter]
         public async Task<IActionResult> Index()
         {
-            await _emailSender.SendEmailAsync("1", "2", "3");
-            var topRatedNews = _db.Articles
-                .OrderByDescending(article => article.PositivityRate)
-                .Select(article => new TopRatedNewsHomeScreenViewModel()
-                {
-                    Id = article.Id,
-                    Title = article.Title
-                });
+            try
+            {
+                _logger.LogInformation("Home page");
+                await _emailSender.SendEmailAsync("1", "2", "3");
+                var topRatedNews = _db.Articles
+                    .OrderByDescending(article => article.PositivityRate)
+                    .Select(article => new TopRatedNewsHomeScreenViewModel()
+                    {
+                        Id = article.Id,
+                        Title = article.Title
+                    });
+
+                throw new ArgumentNullException();
+            }
+            catch (Exception e)
+            {
+                Log.Fatal(e, $"{e.Message} \n Stack trace: {e.StackTrace}");
+
+            }
 
             return View();
         }

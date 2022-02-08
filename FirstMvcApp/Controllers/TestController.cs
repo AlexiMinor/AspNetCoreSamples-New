@@ -6,6 +6,13 @@ namespace FirstMvcApp.Controllers
 {
     public class TestController : Controller
     {
+        private readonly ILogger _logger;
+
+        public TestController(ILogger logger)
+        {
+            _logger = logger;
+        }
+
         [HttpGet]
         public async Task Test2Async()
         {
