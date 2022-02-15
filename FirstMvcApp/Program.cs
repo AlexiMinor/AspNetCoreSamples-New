@@ -21,14 +21,14 @@ namespace FirstMvcApp
                 {
                     lc.MinimumLevel.Information().WriteTo.Console();
                     lc.MinimumLevel.Debug().WriteTo.CustomSink();
-                    lc.MinimumLevel.Fatal().WriteTo.File(@"C:\Users\AlexiMinor\Desktop\New folder (4)\log.log");
+                    lc.MinimumLevel.Warning().WriteTo.File(@"C:\Users\AlexiMinor\Desktop\New folder (4)\log.log");
                 });
 
 
             builder.Configuration
                 .AddJsonFile("emailConfiguration.json")
                 .AddInMemoryCollection();
-                //.AddTxtConfiguration("123");
+            //.AddTxtConfiguration("123");
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -42,7 +42,7 @@ namespace FirstMvcApp
             //        { "fromEmail", "value" },
             //        { "emailPassword", "value2" }
             //    });
-            
+
             //var inMemoryConfigData = builder.Configuration["key"];
 
             builder.Services.AddDbContext<NewsAggregatorContext>(opt
@@ -50,14 +50,20 @@ namespace FirstMvcApp
 
             //RegisterServices(builder.Services);
             // Add services to the container.
-            builder.Services.AddScoped<IArticlesService, ArticlesService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
             builder.Services.AddScoped<IRepository<Comment>, CommentsRepository>();
+            builder.Services.AddScoped<IRepository<Source>, SourceRepository>();
+            builder.Services.AddScoped<IRepository<Role>, RoleRepository>();
+
+            builder.Services.AddScoped<IArticlesService, ArticlesService>();
             builder.Services.AddScoped<ITestService, TestService>();
             builder.Services.AddScoped<IEmailSender, EmailService>();
-          
+            builder.Services.AddScoped<ISourceService, SourceService>();
+            builder.Services.AddScoped<IRssService, RssService>();
+            builder.Services.AddScoped<IHtmlParserService, HtmlParserService>();
+
             builder.Services.AddScoped<CustomFilter>();
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -70,7 +76,7 @@ namespace FirstMvcApp
             });
 
             //builder.Services.AddScoped<INewsService, NewsService>();
-            
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -92,7 +98,7 @@ namespace FirstMvcApp
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            app..Run();
+            app.Run();
         }
 
         private static IServiceCollection RegisterServices(IServiceCollection collection)

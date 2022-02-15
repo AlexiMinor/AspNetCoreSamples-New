@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+using AutoMapper;
+using FirstMvcApp.Core.DTOs;
 using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -11,11 +14,25 @@ namespace FirstMvcApp.Controllers
     public class ArticlesController : Controller
     {
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<ArticlesController> _logger;
         private readonly IArticlesService _articlesService;
-        public ArticlesController(IMapper mapper, IArticlesService articlesService)
+        private readonly ISourceService _sourceService;
+        private readonly IRssService _rssService;
+        private readonly IHtmlParserService _htmlParserService;
+
+        public ArticlesController(IMapper mapper, 
+            IArticlesService articlesService, 
+            ILogger<ArticlesController> logger, IConfiguration configuration,
+            ISourceService sourceService, IRssService rssService, IHtmlParserService htmlParserService)
         {
             _mapper = mapper;
             _articlesService = articlesService;
+            _logger = logger;
+            _configuration = configuration;
+            _sourceService = sourceService;
+            _rssService = rssService;
+            _htmlParserService = htmlParserService;
             //_newsService = newsService;`
         }
 
@@ -59,38 +76,38 @@ namespace FirstMvcApp.Controllers
             return View(articles);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Details(Guid id)
-        //{
-        //    var article = _articlesService.GetArticleWithAllNavigationProperties(id);
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            var article = await _articlesService.GetArticleWithAllNavigationProperties(id);
 
-        //    if (article == null)
-        //        return BadRequest("Incorrect id");
+            if (article == null)
+                return BadRequest("Incorrect id");
 
-        //    var viewModel = new NewsDetailViewModel
-        //    {
-        //        Comments = article.Comments
-        //            .Select(comment => new CommentModel()
-        //            {
-        //                Id = comment.Id,
-        //                Text = comment.Text,
-        //                CreationDate = comment.CreationDateTime,
-        //                UserName = comment.User.Email
-        //            })
-        //            .OrderBy(model => model.CreationDate)
-        //            .ToList(),
-        //        NewsDetailModel = new NewsDetailModel()
-        //        {
-        //            Id = article.Id,
-        //            SourceName = article.Source.Name,
-        //            Body = article.Body,
-        //            Title = article.Title,
-        //            CreationDate = article.CreationDate
-        //        }
-        //    };
+            var viewModel = new NewsDetailViewModel
+            {
+                //Comments = article.Comments
+                //    .Select(comment => new CommentModel()
+                //    {
+                //        Id = comment.Id,
+                //        Text = comment.Text,
+                //        CreationDate = comment.CreationDateTime,
+                //        UserName = comment.User.Email
+                //    })
+                //    .OrderBy(model => model.CreationDate)
+                //    .ToList(),
+                NewsDetailModel = new NewsDetailModel()
+                {
+                    Id = article.Id,
+                    //SourceName = article.Source.Name,
+                    Body = article.Body,
+                    Title = article.Title,
+                    CreationDate = article.CreationDate
+                }
+            };
 
-        //    return View(viewModel);
-        //}
+            return View(viewModel);
+        }
 
         [HttpGet]
         public IActionResult Create()
@@ -182,6 +199,52 @@ namespace FirstMvcApp.Controllers
 
 
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetNewsFromSources()
+        {
+            try
+            {
+                var sw = new Stopwatch();
+                sw.Start();
+                var rssUrls = await _sourceService.GetRssUrlsAsync();
+                var concurrentDictionary = new ConcurrentDictionary<string, RssArticleDto?>();
+
+                var result = Parallel.ForEach(rssUrls,parallelOptions:new ParallelOptions(){}, dto =>
+                {
+                    _rssService.GetArticlesInfoFromRss(dto.RssUrl).AsParallel().ForAll(articleDto 
+                        => concurrentDictionary.TryAdd(articleDto.Url, articleDto));
+                });
+
+                var extArticlesUrls = await _articlesService.GetAllExistingArticleUrls();
+
+                Parallel.ForEach(extArticlesUrls.Where(url => concurrentDictionary.ContainsKey(url)),
+                    s => concurrentDictionary.Remove(s, out var dto));
+
+                //var groupedRssArticles = concurrentDictionary.GroupBy(pair => _sourceService.GetSourceByUrl(pair.Key).Result);
+
+                //Parallel.ForEach(groupedRssArticles,)
+
+
+                foreach (var rssArticleDto in concurrentDictionary)
+                {
+                    var body = await _htmlParserService.GetArticleContentFromUrlAsync(rssArticleDto.Key);
+                }
+           
+
+                sw.Stop();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                var exMessage =
+                    string.Format(_configuration.GetSection("ApplicationVariables")["LogErrorMessageFormat"],
+                        ex.Message,
+                        ex.StackTrace);
+                _logger.LogError(ex, exMessage);
+                return StatusCode(500, new { ex.Message});
+            }
         }
     }
 

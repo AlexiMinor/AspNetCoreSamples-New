@@ -8,20 +8,32 @@ namespace FirstMvcApp.DataAccess
     {
         private readonly NewsAggregatorContext _db;
         private readonly IArticleRepository _articleRepository;
+        private readonly IRepository<Source> _sourceRepository;
+        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Comment> _commentRepository;
+        private readonly IRepository<Role> _roleRepository;
 
-        public UnitOfWork(IArticleRepository articleRepository,
-            NewsAggregatorContext context)
+        public UnitOfWork(NewsAggregatorContext context, 
+            IArticleRepository articleRepository,
+            IRepository<User> users, IRepository<Role> roles, 
+            IRepository<Comment> comments, 
+            IRepository<Source> sourceRepository, 
+            IRepository<Comment> commentRepository, 
+            IRepository<User> userRepository)
         {
             _articleRepository = articleRepository;
             _db = context;
+           _sourceRepository = sourceRepository;
+           _commentRepository = commentRepository;
+           _userRepository = userRepository;
         }
 
         public IArticleRepository Articles => _articleRepository;
 
-        public IRepository<Role> Roles { get; }
-        public IRepository<User> Users { get; }
-        public IRepository<Source> Sources { get; }
-        public IRepository<Comment> Comments { get; }
+        public IRepository<Role> Roles => _roleRepository;
+        public IRepository<User> Users => _userRepository;
+        public IRepository<Source> Sources => _sourceRepository;
+        public IRepository<Comment> Comments => _commentRepository;
 
 
         public async Task<int> Commit()

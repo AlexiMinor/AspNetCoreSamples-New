@@ -67,18 +67,7 @@ namespace FirstMvcApp.Domain.Services
             return _mapper.Map<ArticleDto>(article);
         }
 
-        //public async Task<ArticleDto> GetArticlesByDateWithCommentsAndUsernames()
-        //{
-        //    var articles = _unitOfWork.Articles.Get();
-        //    foreach (var article in articles)
-        //    {
-        //        var comments = await _commentService
-        //            .GetAllCommentsWithUsernameByArticleId(article.Id);
-        //    }
-
-        //    return _mapper.Map<ArticleDto>(article);
-        //}
-
+     
         public async Task<int?> DeleteAsync(Guid modelId)
         {
             try
@@ -108,6 +97,11 @@ namespace FirstMvcApp.Domain.Services
                 .Select(article => _mapper.Map<ArticleWithSourceNameDto>(article))
                 .ToArrayAsync();
             return result;
+        }
+
+        public async Task<List<string>> GetAllExistingArticleUrls()
+        {
+            return await _unitOfWork.Articles.Get().Select(article => article.SourceUrl).ToListAsync();
         }
     }
 }

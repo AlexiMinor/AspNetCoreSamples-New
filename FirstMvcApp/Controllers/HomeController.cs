@@ -5,12 +5,13 @@ using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Data;
 using FirstMvcApp.Filters;
 using Serilog;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace FirstMvcApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger _logger;
         private readonly NewsAggregatorContext _db;
 
         private readonly IEmailSender _emailSender;
@@ -42,7 +43,7 @@ namespace FirstMvcApp.Controllers
             }
             catch (Exception e)
             {
-                Log.Fatal(e, $"{e.Message} \n Stack trace: {e.StackTrace}");
+                Log.Fatal(e, string.Format("{0} \n Stack trace: {1}", e.Message, e.StackTrace));
 
             }
 

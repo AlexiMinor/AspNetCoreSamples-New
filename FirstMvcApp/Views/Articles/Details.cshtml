@@ -1,9 +1,20 @@
 ﻿@model NewsDetailViewModel
 
 <div class="container">
+   
     <div class="row gx-5">
-        <div class="col-3">
-            <h1>@Model.NewsDetailModel.Title</h1>
+        <div class="card" >
+            <div class="card-body">
+                <h1 class="card-title">@Model.NewsDetailModel.Title</h1>
+                <h6 class="card-subtitle mb-2 text-muted">@Model.NewsDetailModel.CreationDate</h6>
+                <div class="card-text">
+                    @Html.Raw(Model.NewsDetailModel.Body)
+                </div>
+              
+            </div>
+        </div>
+       @* <div class="col-3">
+            <h1></h1>
         </div>
         <div class="offset-6 col-3">
             <p>
@@ -13,19 +24,26 @@
                 @Model.NewsDetailModel.CreationDate
             </p>
         </div>
+        <br/>
+        <div class="col-12">
+          
+        </div>*@
+        <br/>
+
         <div class="col-12">
             Date Time now: @DateTime.Now.ToString("F")
         </div>
+
         <cache expires-on="DateTimeOffset.Now.AddDays(1)">
             <div class="col-12">
                 @await Html.PartialAsync("DateTimePartial")
             </div>
         </cache>
     </div>
-    <hr />
-    <a asp-controller="Articles" asp-action="Edit" asp-route-id="@Model.NewsDetailModel.Id">Edit</a>
-    <hr />
-    <div class="row gx-5">
+    <hr/>
+    @*<a asp-controller="Articles" asp-action="Edit" asp-route-id="@Model.NewsDetailModel.Id">Edit</a>*@
+    <hr/>
+    @* <div class="row gx-5">
         @foreach (var comment in Model.Comments)
         {
             <div class="offset-2 col-8">
@@ -42,5 +60,5 @@
         }
         <hr />
 
-    </div>
+    </div>*@
 </div>

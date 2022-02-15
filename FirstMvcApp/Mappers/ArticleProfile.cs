@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.ServiceModel.Syndication;
+using AutoMapper;
 using FirstMvcApp.Core.DTOs;
 using FirstMvcApp.Data;
 using FirstMvcApp.Models;
@@ -10,6 +11,7 @@ namespace FirstMvcApp.Mappers
         public ArticleProfile()
         {
             CreateMap<ArticleDto, ArticleTableViewModel>();
+
             CreateMap<Article, ArticleTableViewModel>();
             CreateMap<Article, ArticleDto>()
                 .ForMember(dest => dest.Body, opt => opt.MapFrom(article => article.Body));
@@ -22,6 +24,11 @@ namespace FirstMvcApp.Mappers
             CreateMap<Article, ArticleWithSourceNameDto>()
                 .ForMember(dest => dest.SourceName,
                     opt => opt.MapFrom(src => src.Source.Name));
+
+            CreateMap<SyndicationItem, RssArticleDto>()
+                .ForMember(dto => dto.Url, opt => opt.MapFrom(item =>item.Id))
+                .ForMember(dto => dto.Title, opt => opt.MapFrom(item => item.Title.Text))
+                .ForMember(dto => dto.Description, opt => opt.MapFrom(item => item.Summary.Text));
         }
     }
 }

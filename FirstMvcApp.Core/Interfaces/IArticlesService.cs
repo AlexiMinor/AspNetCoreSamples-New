@@ -8,4 +8,5 @@ public interface IArticlesService
     Task<IEnumerable<ArticleDto>> GetAllNewsAsync();
     Task<ArticleDto> GetArticleWithAllNavigationProperties(Guid id);
     Task<int?> DeleteAsync(Guid modelId);
+    Task<List<string>> GetAllExistingArticleUrls();
 }
