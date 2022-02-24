@@ -4,6 +4,7 @@ using FirstMvcApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FirstMvcApp.Data.Migrations
 {
     [DbContext(typeof(NewsAggregatorContext))]
-    partial class NewsAggregatorContextModelSnapshot : ModelSnapshot
+    [Migration("20220224174320_AddUserNormalizedEmail")]
+    partial class AddUserNormalizedEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -158,12 +160,14 @@ namespace FirstMvcApp.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("RegistrationDate")
+                    b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");

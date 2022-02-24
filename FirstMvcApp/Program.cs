@@ -1,3 +1,4 @@
+using System.Configuration;
 using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Core.Interfaces.Data;
 using FirstMvcApp.Core.SerilogSinks;
@@ -6,6 +7,9 @@ using FirstMvcApp.Data.Entities;
 using FirstMvcApp.DataAccess;
 using FirstMvcApp.Domain.Services;
 using FirstMvcApp.Filters;
+using Hangfire;
+using Hangfire.SqlServer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -56,6 +60,7 @@ namespace FirstMvcApp
             builder.Services.AddScoped<IRepository<Comment>, CommentsRepository>();
             builder.Services.AddScoped<IRepository<Source>, SourceRepository>();
             builder.Services.AddScoped<IRepository<Role>, RoleRepository>();
+            builder.Services.AddScoped<IRepository<UserRole>, UserRoleRepository>();
 
             builder.Services.AddScoped<IArticlesService, ArticlesService>();
             builder.Services.AddScoped<ITestService, TestService>();
@@ -63,10 +68,37 @@ namespace FirstMvcApp
             builder.Services.AddScoped<ISourceService, SourceService>();
             builder.Services.AddScoped<IRssService, RssService>();
             builder.Services.AddScoped<IHtmlParserService, HtmlParserService>();
-
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<CustomFilter>();
-
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
+            builder.Services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection"), 
+                    new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                }));
+
+            // Add the processing server as IHostedService
+            builder.Services.AddHangfireServer();
+
+            builder.Services
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(opt=>
+                {
+                    opt.LoginPath = "/account/login";
+                });
+
+            builder.Services.AddAuthorization();
 
             builder.Services.AddControllersWithViews(opt =>
             {
@@ -92,11 +124,23 @@ namespace FirstMvcApp
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.UseHangfireDashboard();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var rssService = scope.ServiceProvider.GetRequiredService<IRssService>();
+                RecurringJob.AddOrUpdate("Aggregation articles from rss",
+                    () => rssService.AggregateArticleDataFromRssSources(),
+                    "5 4 */13 * MON-FRI");
+            }
+
 
             app.Run();
         }

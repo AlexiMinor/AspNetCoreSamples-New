@@ -42,6 +42,13 @@ namespace FirstMvcApp.Domain.Services
             //take all news from db
         }
 
+        public async Task<int> InsertNews(IEnumerable<ArticleDto> articles)
+        {
+            var entities = articles.Select(dto => _mapper.Map<Article>(dto)).ToArray();
+            await _unitOfWork.Articles.AddRange(entities);
+            return await _unitOfWork.Commit();
+        }
+
         public async Task<ArticleDto> GetArticleWithAllNavigationProperties(Guid id)
         {
             var article = await _unitOfWork.Articles.GetByIdWithIncludes(id,

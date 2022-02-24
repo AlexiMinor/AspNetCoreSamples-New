@@ -6,6 +6,7 @@ public interface IArticlesService
 {
     //todo add model
     Task<IEnumerable<ArticleDto>> GetAllNewsAsync();
+    Task<int> InsertNews(IEnumerable<ArticleDto> articles);
     Task<ArticleDto> GetArticleWithAllNavigationProperties(Guid id);
     Task<int?> DeleteAsync(Guid modelId);
     Task<List<string>> GetAllExistingArticleUrls();
