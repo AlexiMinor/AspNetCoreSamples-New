@@ -78,6 +78,22 @@ namespace FirstMvcApp.Domain.Services
             return await _unitOfWork.Commit();
         }
 
+        public async Task<IEnumerable<string>> GetRolesAsync(Guid userId)
+        {
+            var userRoleIds = (await _unitOfWork
+                .Users.GetByIdWithIncludes(userId, 
+                        user => user.UserRoles))
+                .UserRoles.Select(role => role.RoleId);
+
+            var names = new List<string>();
+            foreach (var userRoleId in userRoleIds)
+            {
+                names.Add(await _roleService.GetRoleNameByIdAsync(userRoleId));
+            }
+
+            return names;
+        }
+
         public async Task<int> SetPasswordAsync(Guid userId, string password)
         {
 

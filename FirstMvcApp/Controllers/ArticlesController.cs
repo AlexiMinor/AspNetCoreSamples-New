@@ -6,11 +6,11 @@ using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FirstMvcApp.Controllers
 {
+    [Authorize(Roles = "User, Admin")]
     public class ArticlesController : Controller
     {
         private readonly IMapper _mapper;
@@ -74,6 +74,28 @@ namespace FirstMvcApp.Controllers
 
 
             return View(articles);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var article = await _articlesService.GetArticleAsync(id);
+            var sources = await _sourceService.GetSourcesForDropdownSelect();
+
+            var viewModel = _mapper.Map<ArticleChangeModel>(article);
+            viewModel.Sources = sources
+                .Select(dto => new SelectListItem(dto.Name, 
+                    dto.Id.ToString("D"), 
+                    dto.Id.Equals(article.SourceId)))
+                .ToList();
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(ArticleChangeModel model)
+        {
+          
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -202,6 +224,7 @@ namespace FirstMvcApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetNewsFromSources()
         {
             try

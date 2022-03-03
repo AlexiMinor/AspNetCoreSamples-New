@@ -1,4 +1,4 @@
-﻿@model NewsDetailModel
+﻿@model ArticleChangeModel
 
 @{
     ViewBag.Title = "Edit";
@@ -8,25 +8,36 @@
     <h2>Edit article</h2>
     <div class="row gx-5">
         <form asp-controller="Articles" asp-action="Edit" asp-antiforgery="true" method="post"> 
-            <div>
                 <input type="hidden" asp-for="Id"/>
                 <div class="mb-3">
                     <label class="col-sm-2 col-form-label" asp-for="Title"></label>
                     <input class="form-control" type="text" asp-for="Title">
                 </div>
                 <div class="mb-3">
+                    <label class="col-sm-2 col-form-label" asp-for="Title"></label>
+                    <textarea class="form-control" asp-for="Description"></textarea>
+                </div>
+                <div class="mb-3">
                     <label class="col-sm-2 col-form-label" asp-for="Body"></label>
                     <textarea class="form-control" asp-for="Body"></textarea>
                 </div> 
                 <div class="mb-3">
-                    <label class="col-sm-2 col-form-label" asp-for="ArticleType"></label>
-                    <select asp-for="ArticleType" asp-items="Html.GetEnumSelectList<ArticleType>()"></select>
+                    <label class="col-sm-2 col-form-label" asp-for="SourceId"></label>
+                    <select asp-for="SourceId" asp-items="Model.Sources"></select>
                 </div>
                 <div class="mb-3">
                     <label class="col-sm-2 col-form-label" asp-for="CreationDate"></label>
                     <input type="datetime-local" class="form-control" asp-for="CreationDate">
-                </div>
-            </div>
+                </div> 
+                <div class="mb-3">
+                    <label class="col-sm-2 col-form-label" asp-for="PositivityRate"></label>
+                    <input type="number" class="form-control" asp-for="PositivityRate">
+                </div> 
+                <div class="mb-3">
+                    @Html.DropDownListFor(model => model.SourceId, Model?.Sources, "Select category")
+                </div> 
+                <input type="submit" class="btn btn-primary" value="Submit">
+
         </form>
     </div>
 </div>

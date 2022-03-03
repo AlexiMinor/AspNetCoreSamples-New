@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstMvcApp.Data", "FirstMv
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{7EF91EBD-76F1-4002-A9BC-6D3DF8306BA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstMvcApp.DataAccess", "FirstMvcApp.DataAccess\FirstMvcApp.DataAccess.csproj", "{EE0B0329-C210-46FC-AA21-BEEDC7F97110}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstMvcApp.DataAccess", "FirstMvcApp.DataAccess\FirstMvcApp.DataAccess.csproj", "{EE0B0329-C210-46FC-AA21-BEEDC7F97110}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcAppWithIdentity", "MvcAppWithIdentity\MvcAppWithIdentity.csproj", "{96826F2E-D79B-45BE-86F4-1DCD70304D7F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{EE0B0329-C210-46FC-AA21-BEEDC7F97110}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE0B0329-C210-46FC-AA21-BEEDC7F97110}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE0B0329-C210-46FC-AA21-BEEDC7F97110}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96826F2E-D79B-45BE-86F4-1DCD70304D7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96826F2E-D79B-45BE-86F4-1DCD70304D7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96826F2E-D79B-45BE-86F4-1DCD70304D7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96826F2E-D79B-45BE-86F4-1DCD70304D7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -57,6 +57,12 @@ namespace FirstMvcApp.Domain.Services
             return _mapper.Map<ArticleDto>(article);
         }
 
+        public async Task<ArticleDto> GetArticleAsync(Guid id)
+        {
+            var article = await _unitOfWork.Articles.GetById(id);
+            return _mapper.Map<ArticleDto>(article);
+        }
+
 
         public async Task<ArticleDto> GetArticleWithCommentsAndUsernames(Guid id)
         {

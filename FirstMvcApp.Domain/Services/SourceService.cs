@@ -52,5 +52,14 @@ namespace FirstMvcApp.Domain.Services
                    ?? Guid.Empty;
 
         }
+
+        public async Task<IEnumerable<SourceDropDownDto>> GetSourcesForDropdownSelect()
+        {
+            return await _unitOfWork.Sources.Get().Select(source => new SourceDropDownDto()
+            {
+                Id = source.Id,
+                Name = source.Name
+            }).ToListAsync();
+        }
     }
 }

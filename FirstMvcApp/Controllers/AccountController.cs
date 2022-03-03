@@ -12,32 +12,34 @@ namespace FirstMvcApp.Controllers
     public class AccountController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly IConfiguration _configuration;
         private readonly ILogger<AccountController> _logger;
         private readonly IAccountService _accountService;
-        private readonly ISourceService _sourceService;
-        private readonly IRssService _rssService;
-        private readonly IHtmlParserService _htmlParserService;
+        private readonly IRoleService _roleService;
 
         public AccountController(IMapper mapper,
             IAccountService accountService, 
-            ILogger<AccountController> logger, IConfiguration configuration,
-            ISourceService sourceService, IRssService rssService, IHtmlParserService htmlParserService)
+            ILogger<AccountController> logger, 
+            IRoleService roleService)
         {
             _mapper = mapper;
             _accountService = accountService;
             _logger = logger;
-            _configuration = configuration;
-            _sourceService = sourceService;
-            _rssService = rssService;
-            _htmlParserService = htmlParserService;
-            //_newsService = newsService;`
+            _roleService = roleService;
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login(string? returnUrl)
         {
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                var model = new AccountLoginModel
+                {
+                    ReturnUrl = returnUrl
+                };
+                return View(model);
+            }
+
             return View();
         }
 
@@ -46,18 +48,39 @@ namespace FirstMvcApp.Controllers
         {
             if (await _accountService.CheckPassword(model.Email, model.Password))
             {
-                var claims = new List<Claim>() { new Claim(ClaimTypes.Name, model.Email) };
+                var userId = (await _accountService.GetUserIdByEmailAsync(model.Email))
+                    .GetValueOrDefault();
+                
+                var roleClaims = 
+                    (await _accountService.GetRolesAsync(userId))
+                    .Select(rn => new Claim(ClaimTypes.Role, rn));
+                var claims = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.Name, model.Email)
+                };
+                claims.AddRange(roleClaims);
                 var claimsIdentity = new ClaimsIdentity(claims, authenticationType: "Cookies");
+                
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity));
-                return Ok();
+
+                return Redirect(model.ReturnUrl ?? "/");
             }
             return BadRequest();
         }
 
         [HttpGet]
-        public async Task<IActionResult> Register()
+        public async Task<IActionResult> Register(string? returnUrl)
         {
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                var model = new AccountRegisterModel
+                {
+                    ReturnUrl = returnUrl
+                };
+                return View(model);
+            }
+
             return View();
         }
 
@@ -71,6 +94,18 @@ namespace FirstMvcApp.Controllers
                     var userId = await _accountService.CreateUserAsync(model.Email);
                     await _accountService.SetRoleAsync(userId, "User");
                     await _accountService.SetPasswordAsync(userId, model.Password);
+             
+                    var claims = new List<Claim>()
+                    {
+                        new Claim(ClaimTypes.Name, model.Email),
+                        new Claim(ClaimTypes.Role, "User")
+                    };
+                    var claimsIdentity = new ClaimsIdentity(claims, authenticationType: "Cookies");
+
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity));
+
+                    return Redirect(model.ReturnUrl ?? "/");
                 }
                 else
                 {
@@ -79,6 +114,14 @@ namespace FirstMvcApp.Controllers
             }
             return View(model);
         }
+
+        [HttpGet]
+        [Route("access-denied")]
+        public async Task<IActionResult> AccessDenied()
+        {
+            return View();
+        }
+
     }
 
 

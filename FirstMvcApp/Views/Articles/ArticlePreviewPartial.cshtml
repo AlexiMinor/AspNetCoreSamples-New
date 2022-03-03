@@ -6,6 +6,10 @@
             <h5 class="card-title">@Model.Title</h5>
             <p class="card-text">@Model.Description</p>
             <a asp-action="Details" asp-route-id="@Model.Id" asp-fragment="" class="btn btn-primary">Read</a>
+            <article-buttons-block>
+                <a class="btn btn-warning" asp-controller="Articles" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                <a class="btn btn-danger" asp-controller="Articles" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+            </article-buttons-block>
             @*<a asp-controller="User" asp-action="UserDetail" asp-route-model="@{ new UserRegisterModel() { };}" class="btn btn-primary">Read</a>*@
         </div>
         <div class="card-footer text-muted">

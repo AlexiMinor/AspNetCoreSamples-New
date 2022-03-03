@@ -11,13 +11,15 @@
  
 
 <div class="container g-5">
-    <div class="row g-5">
-        <div class="col-4 offset-4 g-5">
-            <form asp-controller="Articles" asp-action="GetNewsFromSources" method="post">
-                <input class="btn btn-primary" type="submit" value="GET NEWS"/>
-            </form>
-        </div>
-    </div>
+    @*@if (Model.IsAdmin)
+    {
+        @Html.RenderPartialAsync("GetArticlesPartial")
+    }*@
+    
+  @*  @await Html.PartialAsync("GetArticlesPartial")
+*@
+    <get-news-button></get-news-button>
+    
     <div class="row g-5">
         @foreach (var article in Model)
         {

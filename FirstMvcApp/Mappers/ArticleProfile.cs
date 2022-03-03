@@ -11,6 +11,7 @@ namespace FirstMvcApp.Mappers
         public ArticleProfile()
         {
             CreateMap<ArticleDto, ArticleTableViewModel>();
+            CreateMap<ArticleDto, ArticleChangeModel>();
 
             CreateMap<Article, ArticleTableViewModel>();
             CreateMap<Article, ArticleDto>()
