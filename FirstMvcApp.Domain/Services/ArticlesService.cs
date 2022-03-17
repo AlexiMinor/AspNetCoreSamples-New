@@ -5,22 +5,26 @@ using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Core.Interfaces.Data;
 using FirstMvcApp.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace FirstMvcApp.Domain.Services
 {
     public class ArticlesService : IArticlesService
     {
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
         private readonly ITestService _testService;
         private readonly ICommentService _commentService;
         private readonly IUnitOfWork _unitOfWork;
 
         public ArticlesService(ITestService testService,
-            IMapper mapper, IUnitOfWork unitOfWork)
+            IMapper mapper, IUnitOfWork unitOfWork, 
+            IConfiguration configuration)
         {
             _testService = testService;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _configuration = configuration;
         }
 
         public async Task<int> UpdateNameAsync(Guid articleId, string newName)
@@ -34,12 +38,24 @@ namespace FirstMvcApp.Domain.Services
 
         public async Task<IEnumerable<ArticleDto>> GetAllNewsAsync()
         {
-            await _testService.Do();
+            //await _testService.Do();
             //todo go to db
             return await _unitOfWork.Articles.Get()
                 .Select(article => _mapper.Map<ArticleDto>(article))
                 .ToArrayAsync();
             //take all news from db
+        }
+
+        public async Task<IEnumerable<ArticleDto>> GetNewsByPageAsync(int page)
+        {
+            var pageSize = Convert.ToInt32(
+                _configuration["ApplicationVariables:PageSize"]);
+            return await _unitOfWork.Articles.Get()
+                .OrderBy(article => article.CreationDate)
+                .Skip(page* pageSize)
+                .Take(pageSize)
+                .Select(article => _mapper.Map<ArticleDto>(article))
+                .ToArrayAsync();
         }
 
         public async Task<int> InsertNews(IEnumerable<ArticleDto> articles)

@@ -50,6 +50,12 @@ namespace FirstMvcApp.Controllers
             return View();
         }
 
+        //[CustomNotFoundFilter]
+        public async Task<IActionResult> IndexNew()
+        {
+            return View();
+        }
+
         public IActionResult About()
         {
             var model = new AboutModel()

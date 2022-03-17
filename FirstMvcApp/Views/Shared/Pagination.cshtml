@@ -1,0 +1,11 @@
+﻿@model PaginationModel 
+<div class="btn-toolbar mb-3" role="toolbar">
+    <div class="btn-group me-2" role="group">
+        @for (int i = 1; i <= Model.PagesAmount; i++)
+        {
+            <a asp-controller="@Model.ControllerName" asp-action="@Model.ActionName" asp-route-page="@i" class="btn btn-outline-secondary">
+                @i
+            </a>
+        }
+    </div>
+</div>

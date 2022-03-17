@@ -2,7 +2,7 @@
 
 public class ArticleIndexViewModel
 {
-    List<ArticleListItemViewModel> ArticleList { get; set; }
+    public List<ArticleListItemViewModel> ArticleList { get; set; }
 
-    private bool IsAdmin { get; set; }
+    public int PagesAmount { get; set; }
 }

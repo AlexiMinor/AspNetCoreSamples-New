@@ -21,8 +21,8 @@ namespace FirstMvcApp.Controllers
         private readonly IRssService _rssService;
         private readonly IHtmlParserService _htmlParserService;
 
-        public ArticlesController(IMapper mapper, 
-            IArticlesService articlesService, 
+        public ArticlesController(IMapper mapper,
+            IArticlesService articlesService,
             ILogger<ArticlesController> logger, IConfiguration configuration,
             ISourceService sourceService, IRssService rssService, IHtmlParserService htmlParserService)
         {
@@ -38,31 +38,28 @@ namespace FirstMvcApp.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var articles = (await _articlesService.GetAllNewsAsync())
+            var pageSize = Convert.ToInt32(
+                _configuration["ApplicationVariables:PageSize"]);
+            
+            var pageAmount = Convert.ToInt32(
+                Math.Ceiling(
+                    (double)(await _articlesService.GetAllNewsAsync()).Count() / pageSize));
+            var articles = (await _articlesService.GetNewsByPageAsync(page-1))
                 .Select(article => _mapper.Map<ArticleListItemViewModel>(article))
                 .OrderByDescending(article => article.CreationDate).ToList();
 
-            return View(articles);
+            var model = new ArticleIndexViewModel()
+            {
+                ArticleList = articles,
+                PagesAmount = pageAmount
+            };
+
+            return View(model);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> TopRated()
-        //{
-        //    var articles = await getArticles
-        //        .Select(article => new ArticleListItemViewModel()
-        //        {
-        //            Id = article.Id,
-        //            Title = article.Title,
-        //            CreationDate = article.CreationDate,
-        //            Description = article.Description,
-        //            Rate = article.PositivityRate
-        //        })
-        //        .OrderByDescending(article => article.Rate).ToListAsync();
 
-        //    return View(articles);
-        //}
 
         [HttpGet]
         public async Task<IActionResult> Table()
@@ -84,8 +81,8 @@ namespace FirstMvcApp.Controllers
 
             var viewModel = _mapper.Map<ArticleChangeModel>(article);
             viewModel.Sources = sources
-                .Select(dto => new SelectListItem(dto.Name, 
-                    dto.Id.ToString("D"), 
+                .Select(dto => new SelectListItem(dto.Name,
+                    dto.Id.ToString("D"),
                     dto.Id.Equals(article.SourceId)))
                 .ToList();
             return View(viewModel);
@@ -94,7 +91,7 @@ namespace FirstMvcApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(ArticleChangeModel model)
         {
-          
+
             return RedirectToAction("Index");
         }
 
@@ -198,7 +195,7 @@ namespace FirstMvcApp.Controllers
         [HttpGet]
         public IActionResult Delete(Guid id)
         {
-            var deleteModel = new DeleteModel(){Id = id};
+            var deleteModel = new DeleteModel() { Id = id };
             return View(deleteModel);
         }
 
@@ -234,11 +231,11 @@ namespace FirstMvcApp.Controllers
                 var rssUrls = await _sourceService.GetRssUrlsAsync();
                 var concurrentDictionary = new ConcurrentDictionary<string, RssArticleDto?>();
 
-                var result = Parallel.ForEach(rssUrls,parallelOptions:new ParallelOptions(){}, dto =>
-                {
-                    _rssService.GetArticlesInfoFromRss(dto.RssUrl).AsParallel().ForAll(articleDto 
-                        => concurrentDictionary.TryAdd(articleDto.Url, articleDto));
-                });
+                var result = Parallel.ForEach(rssUrls, parallelOptions: new ParallelOptions() { }, dto =>
+                    {
+                        _rssService.GetArticlesInfoFromRss(dto.RssUrl).AsParallel().ForAll(articleDto
+                            => concurrentDictionary.TryAdd(articleDto.Url, articleDto));
+                    });
 
                 var extArticlesUrls = await _articlesService.GetAllExistingArticleUrls();
 
@@ -254,7 +251,7 @@ namespace FirstMvcApp.Controllers
                 {
                     var body = await _htmlParserService.GetArticleContentFromUrlAsync(rssArticleDto.Key);
                 }
-           
+
 
                 sw.Stop();
                 return Ok();
@@ -266,7 +263,7 @@ namespace FirstMvcApp.Controllers
                         ex.Message,
                         ex.StackTrace);
                 _logger.LogError(ex, exMessage);
-                return StatusCode(500, new { ex.Message});
+                return StatusCode(500, new { ex.Message });
             }
         }
     }

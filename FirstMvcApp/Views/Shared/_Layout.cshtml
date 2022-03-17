@@ -44,6 +44,8 @@
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
+            
+            @await RenderSectionAsync("Pagination", required: false)
         </main>
     </div>
 

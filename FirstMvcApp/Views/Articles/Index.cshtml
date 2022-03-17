@@ -1,4 +1,4 @@
-﻿@model List<ArticleListItemViewModel>
+﻿@model ArticleIndexViewModel
 
 @*<form method="post" action="~/news/generate">
 
@@ -21,9 +21,18 @@
     <get-news-button></get-news-button>
     
     <div class="row g-5">
-        @foreach (var article in Model)
+        @foreach (var article in Model.ArticleList)
         {
             await Html.RenderPartialAsync("ArticlePreviewPartial", article);
         }
     </div>
 </div>
+
+@await Html.PartialAsync("Pagination", new PaginationModel {PagesAmount = Model.PagesAmount, ControllerName = "Articles",ActionName = "Index" })
+
+
+
+@section Pagination
+{
+    
+}

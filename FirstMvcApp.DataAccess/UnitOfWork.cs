@@ -32,7 +32,6 @@ namespace FirstMvcApp.DataAccess
         }
 
         public IArticleRepository Articles => _articleRepository;
-
         public IRepository<Role> Roles => _roleRepository;
         public IRepository<User> Users => _userRepository;
         public IRepository<Source> Sources => _sourceRepository;

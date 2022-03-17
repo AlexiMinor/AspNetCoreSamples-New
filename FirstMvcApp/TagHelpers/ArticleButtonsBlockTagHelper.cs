@@ -20,9 +20,13 @@ namespace FirstMvcApp.TagHelpers
             if (user != null && user.IsInRole("Admin"))
             {
                 output.TagName = "div";
-                output.Attributes.Add("class", "btn-group");
-                var target = await output.GetChildContentAsync();
-                output.Content.SetHtmlContent(target.GetContent());
+                output.Attributes.Add("class", "btn-toolbar mb-3");
+                output.Attributes.Add("role", "toolbar");
+
+                //set content
+
+                //inject controller name & action-name
+
             }
         }
 
