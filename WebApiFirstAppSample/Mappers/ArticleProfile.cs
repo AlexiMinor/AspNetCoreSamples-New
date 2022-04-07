@@ -1,27 +1,20 @@
-﻿using System.ServiceModel.Syndication;
+﻿using System;
+using System.ServiceModel.Syndication;
 using AutoMapper;
 using FirstMvcApp.Core.DTOs;
-using FirstMvcApp.Data;
 using FirstMvcApp.Data.Entities;
-using FirstMvcApp.Models;
 
-namespace FirstMvcApp.Mappers
+namespace WebApiFirstAppSample.Mappers
 {
     public class ArticleProfile : Profile
     {
         public ArticleProfile()
         {
-            CreateMap<ArticleDto, ArticleTableViewModel>();
-            CreateMap<ArticleDto, ArticleChangeModel>();
 
-            CreateMap<Article, ArticleTableViewModel>();
             CreateMap<Article, ArticleDto>()
                 .ForMember(dest => dest.Body, opt => opt.MapFrom(article => article.Body));
             CreateMap<ArticleDto, Article>();
 
-            CreateMap<ArticleDto, ArticleListItemViewModel>()
-                .ForMember(dest => dest.Rate,
-                    opt => opt.MapFrom(src => src.PositivityRate)); 
 
             CreateMap<Article, ArticleWithSourceNameDto>()
                 .ForMember(dest => dest.SourceName,

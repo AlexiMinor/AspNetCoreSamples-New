@@ -70,16 +70,16 @@ console.log(b);
 
 let welcomeMsg = document.getElementById('welcome-message');
 
-let isConfirmed = confirm('Do you want to change welcome message?');
+//let isConfirmed = confirm('Do you want to change welcome message?');
 
-if (isConfirmed) {
-    welcomeMsg.innerHTML = 'Hello World';
-}
+//if (isConfirmed) {
+//    welcomeMsg.innerHTML = 'Hello World';
+//}
 
 let paragraph = document.getElementsByClassName('custom-element')[0];
 console.log(paragraph);
 
-welcomeMsg.addEventListener("mouseenter", makeBold);
-welcomeMsg.addEventListener("mouseleave", makeNormal);
+//welcomeMsg.addEventListener("mouseenter", makeBold);
+//welcomeMsg.addEventListener("mouseleave", makeNormal);
 
 

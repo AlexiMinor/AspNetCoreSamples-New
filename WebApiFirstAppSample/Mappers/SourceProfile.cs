@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using FirstMvcApp.Core.DTOs;
-using FirstMvcApp.Data;
 using FirstMvcApp.Data.Entities;
-using FirstMvcApp.Models;
 
-namespace FirstMvcApp.Mappers
+namespace WebApiFirstAppSample.Mappers
 {
     public class SourceProfile : Profile
     {

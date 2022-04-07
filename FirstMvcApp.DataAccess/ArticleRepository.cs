@@ -1,5 +1,6 @@
 ﻿using FirstMvcApp.Core.Interfaces.Data;
 using FirstMvcApp.Data;
+using FirstMvcApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace FirstMvcApp.DataAccess;

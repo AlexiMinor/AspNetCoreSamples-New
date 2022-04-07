@@ -20,7 +20,21 @@
 *@
     <get-news-button></get-news-button>
     
-    <div class="row g-5">
+
+
+    <div class="mb-3 row">
+        <div class="col-sm-11">
+            <input type="text" name="searchText" class="form-control" id="search-article-text">
+        </div>
+        <div class="col-sm-1">
+            <button type="submit" class="btn btn-primary mb-3" id="search-article-btn">Search</button>
+        </div>
+    </div>
+       <div id="spinner" class="spinner-border" role="status" hidden>
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    <div class="row g-5" id="articles-list">
+     
         @foreach (var article in Model.ArticleList)
         {
             await Html.RenderPartialAsync("ArticlePreviewPartial", article);
@@ -28,11 +42,12 @@
     </div>
 </div>
 
-@await Html.PartialAsync("Pagination", new PaginationModel {PagesAmount = Model.PagesAmount, ControllerName = "Articles",ActionName = "Index" })
-
-
-
 @section Pagination
 {
-    
+    @await Html.PartialAsync("Pagination", new PaginationModel {PagesAmount = Model.PagesAmount, ControllerName = "Articles",ActionName = "Index" })
+}
+
+@section Scripts
+{
+    <script src="~/js/article.js" ></script>
 }

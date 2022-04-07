@@ -1,6 +1,4 @@
-﻿using FirstMvcApp.Data.Entities;
-
-namespace FirstMvcApp.Data;
+﻿namespace FirstMvcApp.Data.Entities;
 
 public class Source : BaseEntity
 {

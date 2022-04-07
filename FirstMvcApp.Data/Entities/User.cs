@@ -1,7 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using FirstMvcApp.Data.Entities;
-
-namespace FirstMvcApp.Data;
+﻿namespace FirstMvcApp.Data.Entities;
 
 public class User : BaseEntity
 {

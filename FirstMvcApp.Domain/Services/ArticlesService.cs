@@ -4,6 +4,7 @@ using FirstMvcApp.Core.DTOs;
 using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Core.Interfaces.Data;
 using FirstMvcApp.Data;
+using FirstMvcApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -13,18 +14,18 @@ namespace FirstMvcApp.Domain.Services
     {
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
-        private readonly ITestService _testService;
         private readonly ICommentService _commentService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ArticlesService(ITestService testService,
-            IMapper mapper, IUnitOfWork unitOfWork, 
-            IConfiguration configuration)
+        public ArticlesService(IMapper mapper, 
+            IUnitOfWork unitOfWork, 
+            IConfiguration configuration, 
+            ICommentService commentService)
         {
-            _testService = testService;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _configuration = configuration;
+            _commentService = commentService;
         }
 
         public async Task<int> UpdateNameAsync(Guid articleId, string newName)
@@ -77,6 +78,15 @@ namespace FirstMvcApp.Domain.Services
         {
             var article = await _unitOfWork.Articles.GetById(id);
             return _mapper.Map<ArticleDto>(article);
+        }
+
+        public async Task<IEnumerable<ArticleDto>> GetArticlesByNameAsync(string name)
+        {
+            var articles =await _unitOfWork.Articles.Get()
+                .Where(article => article.Title.Contains(name))
+                .Select(article => _mapper.Map<ArticleDto>(article))
+                .ToListAsync();
+            return articles;
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using FirstMvcApp.Data;
+using FirstMvcApp.Data.Entities;
 
 namespace FirstMvcApp.Core.Interfaces.Data;
 

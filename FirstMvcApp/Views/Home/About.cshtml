@@ -22,4 +22,50 @@
     </div>
 </div>
 
-@await Html.PartialAsync("Message")
+<input class="form-control" list="countries-list" id="countries-input" placeholder="Type to search...">
+<datalist id="countries-list"></datalist>
+
+@*@await Html.PartialAsync("Message")*@
+
+
+@section Scripts
+{
+    <script>
+        let list = document.getElementById('countries-list');
+        let countiesInput = document.getElementById('countries-input');
+
+        countiesInput.addEventListener('keyup', autocomplete);
+
+        //countries.forEach(function(item) {
+        //    let opt = document.createElement('option');
+        //    opt.value = item;
+        //    list.appendChild(opt);
+        //});
+
+
+        function autocomplete(event) {
+            let value = event.target.value;
+            list.innerHTML = '';
+
+            if (value.length >= 3) {
+                fetch(`/home/getcountries?country=${value}`, { method: 'get' })
+                    .then((response) => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            console.log(response.status);
+                            return null;
+                        }
+                    })
+                    .then((json) => {
+                        console.log(json); 
+                        json.forEach(function(country) {
+                            let opt = document.createElement('option');
+                            opt.value = country;
+                            list.appendChild(opt);
+                        });
+                    });
+            }
+        };
+    </script>
+}

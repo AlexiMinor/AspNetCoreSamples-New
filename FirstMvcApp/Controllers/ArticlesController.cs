@@ -21,6 +21,8 @@ namespace FirstMvcApp.Controllers
         private readonly IRssService _rssService;
         private readonly IHtmlParserService _htmlParserService;
 
+        private readonly int _pageSize;
+
         public ArticlesController(IMapper mapper,
             IArticlesService articlesService,
             ILogger<ArticlesController> logger, IConfiguration configuration,
@@ -34,19 +36,17 @@ namespace FirstMvcApp.Controllers
             _rssService = rssService;
             _htmlParserService = htmlParserService;
             //_newsService = newsService;`
+            _pageSize = Convert.ToInt32(_configuration["ApplicationVariables:PageSize"]);
         }
 
 
         [HttpGet]
         public async Task<IActionResult> Index(int page = 1)
         {
-            var pageSize = Convert.ToInt32(
-                _configuration["ApplicationVariables:PageSize"]);
-            
             var pageAmount = Convert.ToInt32(
                 Math.Ceiling(
-                    (double)(await _articlesService.GetAllNewsAsync()).Count() / pageSize));
-            var articles = (await _articlesService.GetNewsByPageAsync(page-1))
+                    (double)(await _articlesService.GetAllNewsAsync()).Count() / _pageSize));
+            var articles = (await _articlesService.GetNewsByPageAsync(page - 1))
                 .Select(article => _mapper.Map<ArticleListItemViewModel>(article))
                 .OrderByDescending(article => article.CreationDate).ToList();
 
@@ -93,6 +93,28 @@ namespace FirstMvcApp.Controllers
         {
 
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Search([FromBody]SearchArticlesModel model)
+        {
+            var searchData = (await _articlesService
+                .GetArticlesByNameAsync(model.SearchText))
+                .Select(article => _mapper.Map<ArticleListItemViewModel>(article))
+                .OrderByDescending(article => article.CreationDate).ToList();
+
+            return View("SearchPartial", searchData);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SearchAPI([FromBody] SearchArticlesModel model)
+        {
+            var searchData = (await _articlesService
+                    .GetArticlesByNameAsync(model.SearchText))
+                .Select(article => _mapper.Map<ArticleListItemViewModel>(article))
+                .OrderByDescending(article => article.CreationDate).ToList();
+
+            return Ok(searchData);
         }
 
         [HttpGet]
