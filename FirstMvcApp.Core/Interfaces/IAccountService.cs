@@ -1,5 +1,6 @@
 ﻿using FirstMvcApp.Core.DTOs;
 using FirstMvcApp.Data;
+using FirstMvcApp.Data.Entities;
 
 namespace FirstMvcApp.Core.Interfaces;
 
@@ -12,5 +13,9 @@ public interface IAccountService
     Task<IEnumerable<string>> GetRolesAsync(Guid userId);
     Task<int> SetPasswordAsync(Guid userId, string password);
     Task<Guid?> GetUserIdByEmailAsync(string email);
+    Task<UserDto> GetUserById(Guid id);
+    Task<UserDto> GetUserByEmailAsync(string email);
+    Task<UserDto> GetUserByRefreshTokenAsync(string refreshToken);
     Task<bool> CheckPassword(string email, string password);
 }
+

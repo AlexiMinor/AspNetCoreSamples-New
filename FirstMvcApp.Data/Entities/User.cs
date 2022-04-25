@@ -11,4 +11,5 @@ public class User : BaseEntity
 
     public virtual ICollection<Comment> Comments { get; set; }
     public virtual ICollection<UserRole> UserRoles { get; set; }
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
 }

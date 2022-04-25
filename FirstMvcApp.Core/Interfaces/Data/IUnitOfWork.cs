@@ -11,6 +11,7 @@ public interface IUnitOfWork : IDisposable
     IRepository<Source> Sources { get; }
     IRepository<Comment> Comments { get; }
     IRepository<UserRole> UserRoles { get; }
+    IRepository<RefreshToken> RefreshTokens { get; }
 
     Task<int> Commit();
 }

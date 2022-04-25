@@ -13,6 +13,7 @@ namespace FirstMvcApp.DataAccess
         private readonly IRepository<Comment> _commentRepository;
         private readonly IRepository<Role> _roleRepository;
         private readonly IRepository<UserRole> _userRoleRepository;
+        private readonly IRepository<RefreshToken> _refreshTokenRepository;
 
         public UnitOfWork(NewsAggregatorContext context, 
             IArticleRepository articleRepository,
@@ -20,7 +21,8 @@ namespace FirstMvcApp.DataAccess
             IRepository<Comment> commentRepository, 
             IRepository<User> userRepository, 
             IRepository<Role> roleRepository, 
-            IRepository<UserRole> userRoleRepository)
+            IRepository<UserRole> userRoleRepository, 
+            IRepository<RefreshToken> refreshTokenRepository)
         {
             _db = context;
             _articleRepository = articleRepository;
@@ -29,6 +31,7 @@ namespace FirstMvcApp.DataAccess
            _userRepository = userRepository;
            _roleRepository = roleRepository;
            _userRoleRepository = userRoleRepository;
+           _refreshTokenRepository = refreshTokenRepository;
         }
 
         public IArticleRepository Articles => _articleRepository;
@@ -37,6 +40,7 @@ namespace FirstMvcApp.DataAccess
         public IRepository<Source> Sources => _sourceRepository;
         public IRepository<Comment> Comments => _commentRepository;
         public IRepository<UserRole> UserRoles => _userRoleRepository;
+        public IRepository<RefreshToken> RefreshTokens => _refreshTokenRepository;
 
 
         public async Task<int> Commit()

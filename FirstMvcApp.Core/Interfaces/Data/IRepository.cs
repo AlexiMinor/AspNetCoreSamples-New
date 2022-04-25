@@ -23,6 +23,6 @@ public interface IRepository<T> where T : BaseEntity
     public Task PatchAsync(Guid id, List<PatchModel> patchDtos);
 
     public Task Remove(Guid id);
-
+    Task RemoveRange(Expression<Func<T, bool>> predicate);
     public void Dispose();
 }

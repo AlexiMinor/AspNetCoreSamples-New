@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
+using FirstMvcApp.Core.DTOs;
 using FirstMvcApp.Core.Interfaces;
 using FirstMvcApp.Core.Interfaces.Data;
 using FirstMvcApp.Data;
@@ -45,6 +46,38 @@ namespace FirstMvcApp.Domain.Services
             return (await (await _unitOfWork.Users.FindBy(user =>
                 user.NormalizedEmail != null && user.NormalizedEmail
                     .Equals(normalizedEmail))).FirstOrDefaultAsync())?.Id;
+        }
+
+        public async Task<UserDto> GetUserById(Guid id)
+        {
+            return _mapper.Map<UserDto>(await _unitOfWork.Users.GetById(id));
+
+        }
+
+        public async Task<UserDto> GetUserByEmailAsync(string email)
+        {
+            var normalizedEmail = email.ToUpperInvariant();
+
+            var user= await _unitOfWork.Users
+                .Get()
+                .Where(user =>
+                    user.NormalizedEmail != null && user.NormalizedEmail
+                    .Equals(normalizedEmail))
+                .Include(user => user.UserRoles)
+                .ThenInclude(role => role.Role)
+                .FirstOrDefaultAsync();
+
+            return _mapper.Map<UserDto>(user);
+        }
+
+        public async Task<UserDto> GetUserByRefreshTokenAsync(string refreshToken)
+        {
+            var user = (await (await _unitOfWork.RefreshTokens
+                .FindBy(token => token.Token.Equals(refreshToken)))
+                .FirstOrDefaultAsync())
+                .User;
+
+            return _mapper.Map<UserDto>(user);
         }
 
         public async Task<Guid> CreateUserAsync(string modelEmail)

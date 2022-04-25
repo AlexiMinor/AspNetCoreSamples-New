@@ -7,14 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="11.0.1" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.17.0" />
-    <PackageReference Include="System.ServiceModel.Syndication" Version="6.0.0" />
+    <Folder Include="Handlers\QueryHandlers\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AspNetCoreSamples.CQS\AspNetCoreSamples.CQS.csproj" />
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="MediatR" Version="10.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FirstMvcApp.Core\FirstMvcApp.Core.csproj" />
     <ProjectReference Include="..\FirstMvcApp.Data\FirstMvcApp.Data.csproj" />
   </ItemGroup>

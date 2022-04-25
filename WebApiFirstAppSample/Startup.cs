@@ -1,4 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+using AspNetCoreSamples.CQS.Handlers.CommandHandlers;
+using AspNetCoreSamples.CQS.Handlers.QueryHandlers;
+using AspNetCoreSamples.CQS.Models.Commands;
+using AspNetCoreSamples.CQS.Models.Queries;
+using FirstMvcApp.Core.DTOs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +19,11 @@ using FirstMvcApp.Data;
 using FirstMvcApp.Data.Entities;
 using FirstMvcApp.DataAccess;
 using FirstMvcApp.Domain.Services;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using WebApiFirstAppSample.Middlewares;
 
 namespace WebApiFirstAppSample
 {
@@ -38,7 +50,10 @@ namespace WebApiFirstAppSample
             services.AddScoped<IRepository<Source>, SourceRepository>();
             services.AddScoped<IRepository<Role>, RoleRepository>();
             services.AddScoped<IRepository<UserRole>, UserRoleRepository>();
-            services.AddScoped<IArticlesService, ArticlesService>();
+            services.AddScoped<IRepository<RefreshToken>, RefreshTokenRepository>();
+            services.AddScoped<IArticlesService, ArticleCqsService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<ITestService, TestService>();
             services.AddScoped<IEmailSender, EmailService>();
             services.AddScoped<ISourceService, SourceService>();
@@ -47,8 +62,33 @@ namespace WebApiFirstAppSample
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ICommentService, CommentsService>();
             services.AddScoped<IRoleService, RoleService>();
-
+            services.AddScoped<IRequestHandler<GetArticlesByPageQuery, IEnumerable<ArticleDto>>,
+                    GetArticleByPageQueryHandler>();
+            services.AddScoped<IRequestHandler<RateArticleCommand, bool>,
+                    RateArticleCommandHandler>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.SaveToken = true;
+                    options.RequireHttpsMetadata = true;
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuerSigningKey = true,
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ClockSkew = TimeSpan.Zero,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AppSettings:Secret"]))
+                    };
+                });
+
+            services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -71,7 +111,10 @@ namespace WebApiFirstAppSample
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

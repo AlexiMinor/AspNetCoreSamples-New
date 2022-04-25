@@ -1,11 +1,12 @@
-﻿namespace WebApiFirstAppSample.Models.Requests;
+﻿using System;
+
+namespace WebApiFirstAppSample.Models.Requests;
 
 public class GetArticleRequest
 {
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
-    public string StartDate { get; set; }
-    public string EndDate { get; set; }
+    public Guid? SourseId { get; set; }
 
-    public ArticlesSortType SortType { get; set; }
+    public int? Page { get; set; }
 }

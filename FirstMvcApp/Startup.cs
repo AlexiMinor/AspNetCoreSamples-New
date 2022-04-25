@@ -58,7 +58,9 @@ public class Startup
         services.AddScoped<IRepository<Source>, SourceRepository>();
         services.AddScoped<IRepository<Role>, RoleRepository>();
         services.AddScoped<IRepository<UserRole>, UserRoleRepository>();
+        services.AddScoped<IRepository<RefreshToken>, RefreshTokenRepository>();
         services.AddScoped<IArticlesService, ArticlesService>();
+        services.AddScoped<ICommentService, CommentsService>();
         services.AddScoped<ITestService, TestService>();
         services.AddScoped<IEmailSender, EmailService>();
         services.AddScoped<ISourceService, SourceService>();

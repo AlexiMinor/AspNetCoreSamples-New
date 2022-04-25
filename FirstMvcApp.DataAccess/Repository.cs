@@ -79,10 +79,18 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
     }
 
 
+    public virtual async Task RemoveRange(Expression<Func<T, bool>> predicate)
+    {
+        var entities = DbSet.Where(predicate);
+
+        DbSet.RemoveRange(entities);
+    }
+
     public virtual async Task Remove(Guid id)
     {
         DbSet.Remove(await DbSet.FindAsync(id));
     }
+
 
     public void Dispose()
     {
