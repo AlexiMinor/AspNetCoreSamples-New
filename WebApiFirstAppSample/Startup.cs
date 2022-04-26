@@ -65,7 +65,9 @@ namespace WebApiFirstAppSample
             services.AddScoped<IRequestHandler<GetArticlesByPageQuery, IEnumerable<ArticleDto>>,
                     GetArticleByPageQueryHandler>();
             services.AddScoped<IRequestHandler<RateArticleCommand, bool>,
-                    RateArticleCommandHandler>();
+                    RateArticleCommandHandler>();     
+            services.AddScoped<IRequestHandler<GetAllArticlesQuery, IEnumerable<ArticleDto>>,
+                    GetAllArticlesQueryHandler>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddAuthentication(options =>
@@ -90,6 +92,17 @@ namespace WebApiFirstAppSample
 
             services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 
+            services.AddCors(options => 
+            {
+                options.AddPolicy(name: "EnableAll",
+                    policy =>
+                    {
+                        policy.AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowAnyOrigin();
+                    });
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -110,6 +123,8 @@ namespace WebApiFirstAppSample
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("EnableAll");
 
             app.UseAuthentication();
             app.UseAuthorization();

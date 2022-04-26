@@ -2,19 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using FirstMvcApp.Core.DTOs;
 using FirstMvcApp.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Serilog;
-using WebApiFirstAppSample.Filters;
-using WebApiFirstAppSample.Models.Requests;
 using WebApiFirstAppSample.Models.Responses;
 
 namespace WebApiFirstAppSample.Controllers
@@ -95,14 +89,13 @@ namespace WebApiFirstAppSample.Controllers
         //}
 
         [HttpGet]
-        [Authorize]
         [ProducesResponseType(typeof(IEnumerable<ArticleDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorModel), 500)]
-        public async Task<IActionResult> GetByPage(int page =0)
+        public async Task<IActionResult> GetByPage()
         {
             try
             {
-                var data = await _articleService.GetNewsByPageAsync(page);
+                var data = await _articleService.GetAllNewsAsync();
 
                 if (data.Any())
                 {

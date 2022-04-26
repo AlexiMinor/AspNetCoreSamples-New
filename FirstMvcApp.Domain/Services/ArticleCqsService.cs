@@ -17,7 +17,7 @@ public class ArticleCqsService : IArticlesService
 
     public async Task<IEnumerable<ArticleDto>> GetAllNewsAsync()
     {
-        throw new NotImplementedException();
+        return await _mediator.Send(new GetAllArticlesQuery(), new CancellationToken());
     }
 
     public async Task<IEnumerable<ArticleDto>> GetNewsByPageAsync(int page)
